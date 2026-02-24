@@ -1,8 +1,12 @@
 import express from 'express'
+import { requestId } from './middleware/requestId.js'
+import { errorHandler } from './middleware/errorHandler.js'
+import { NotFoundError } from './errors/index.js'
 
 const app = express()
 const PORT = process.env.PORT ?? 3000
 
+app.use(requestId)
 app.use(express.json())
 
 app.get('/api/health', (_req, res) => {
@@ -32,6 +36,18 @@ app.get('/api/bond/:address', (req, res) => {
   })
 })
 
-app.listen(PORT, () => {
-  console.log(`Credence API listening on http://localhost:${PORT}`)
+/** Catch-all: no route matched → 404. */
+app.use((_req, _res, next) => {
+  next(new NotFoundError('Not found'))
 })
+
+app.use(errorHandler)
+
+/** Start server when run directly; skip when NODE_ENV=test (e.g. supertest). */
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`Credence API listening on http://localhost:${PORT}`)
+  })
+}
+
+export { app }

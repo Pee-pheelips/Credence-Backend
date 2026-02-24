@@ -46,6 +46,8 @@ API runs at [http://localhost:3000](http://localhost:3000). The frontend proxies
 | `npm run build` | Compile TypeScript       |
 | `npm start`     | Run compiled `dist/`     |
 | `npm run lint`  | Run ESLint               |
+| `npm test`      | Run tests (Vitest)       |
+| `npm run test:watch` | Run tests in watch mode |
 
 ## API (current)
 
@@ -54,6 +56,17 @@ API runs at [http://localhost:3000](http://localhost:3000). The frontend proxies
 | GET    | `/api/health`      | Health check       |
 | GET    | `/api/trust/:address` | Trust score (stub) |
 | GET    | `/api/bond/:address`   | Bond status (stub) |
+
+## Error handling
+
+Errors are handled centrally and return a consistent JSON shape:
+
+- **`code`** – Machine-readable code (e.g. `NOT_FOUND`, `VALIDATION_ERROR`)
+- **`message`** – Human-readable message
+- **`details`** – Optional structured data (e.g. validation field errors)
+- **`requestId`** – Request ID for tracing (from `X-Request-Id` or generated)
+
+Known error types map to HTTP status codes (e.g. `NotFoundError` → 404, `ValidationError` → 400). Unknown errors return 500 with a generic message; internals are logged server-side only. See [docs/ERROR_HANDLING.md](docs/ERROR_HANDLING.md) for details.
 
 ## Tech
 
