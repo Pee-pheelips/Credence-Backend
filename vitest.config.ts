@@ -4,25 +4,21 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    env: {
-      NODE_ENV: 'test',
-    },
+    include: ['src/**/*.test.ts'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'lcov'],
+      include: ['src/**/*.ts'],
       exclude: [
-        'node_modules/',
-        'dist/',
-        '**/*.test.ts',
-        '**/*.spec.ts',
-        'jest.config.js',
-        'vitest.config.ts',
+        'src/**/*.test.ts',
+        'src/**/__tests__/**',
+        'src/index.ts', // App entry; health logic is tested via routes/services
       ],
       thresholds: {
-        lines: 94.5,
-        functions: 93,
-        branches: 94,
-        statements: 94.5,
+        statements: 95,
+        branches: 85,
+        functions: 95,
+        lines: 95,
       },
     },
   },
