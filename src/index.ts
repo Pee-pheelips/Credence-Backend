@@ -4,6 +4,7 @@ import { errorHandler } from './middleware/errorHandler.js'
 import { NotFoundError } from './errors/index.js'
 import { createHealthRouter } from './routes/health.js'
 import { createDefaultProbes } from './services/health/probes.js'
+import bulkRouter from './routes/bulk.js'
 
 const app = express()
 const PORT = process.env.PORT ?? 3000
@@ -37,6 +38,9 @@ app.get('/api/bond/:address', (req, res) => {
   })
 })
 
+// Bulk verification endpoint (Enterprise)
+app.use('/api/bulk', bulkRouter)
+
 /** Catch-all: no route matched → 404. */
 app.use((_req, _res, next) => {
   next(new NotFoundError('Not found'))
@@ -44,7 +48,6 @@ app.use((_req, _res, next) => {
 
 app.use(errorHandler)
 
-/** Start server when run directly; skip when NODE_ENV=test (e.g. supertest). */
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
     console.log(`Credence API listening on http://localhost:${PORT}`)
@@ -52,3 +55,4 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 export { app }
+export default app
