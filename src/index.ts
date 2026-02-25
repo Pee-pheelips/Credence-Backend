@@ -2,6 +2,8 @@ import express from 'express'
 import { requestId } from './middleware/requestId.js'
 import { errorHandler } from './middleware/errorHandler.js'
 import { NotFoundError } from './errors/index.js'
+import { createHealthRouter } from './routes/health.js'
+import { createDefaultProbes } from './services/health/probes.js'
 
 const app = express()
 const PORT = process.env.PORT ?? 3000
@@ -9,9 +11,8 @@ const PORT = process.env.PORT ?? 3000
 app.use(requestId)
 app.use(express.json())
 
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', service: 'credence-backend' })
-})
+const healthProbes = createDefaultProbes()
+app.use('/api/health', createHealthRouter(healthProbes))
 
 app.get('/api/trust/:address', (req, res) => {
   const { address } = req.params

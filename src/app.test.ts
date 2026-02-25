@@ -24,7 +24,7 @@ describe('app error responses', () => {
   it('returns 200 for known routes', async () => {
     const res = await request(app).get('/api/health')
     expect(res.status).toBe(200)
-    expect(res.body).toEqual({ status: 'ok', service: 'credence-backend' })
+    expect(res.body).toMatchObject({ status: 'ok', service: 'credence-backend' })
   })
 
   it('includes requestId in 404 response when not provided in header', async () => {
